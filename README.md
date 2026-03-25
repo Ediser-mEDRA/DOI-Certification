@@ -1,4 +1,4 @@
-# DOI-Certification
+# DOI Certification
 The Certification web form is part of the mEDRA interface used to define and manage metadata associated with a DOI, particularly for specific content types not created by an AI and their structured description.
 
 Table of contents
@@ -231,23 +231,23 @@ The final step displays a comprehensive review screen. If any required fields we
 
 ## Field Quick Reference Table
 
-| Field ID | Tab | HTML Type | Required | Validation | XPath source (update) | XML output |
-|---|---|---|---|---|---|---|
-| `fromCompany` | 1 | text | ✅ | non-empty | *(from param)* | `<FromCompany>` |
-| `fromEmail` | 1 | email | ✅ | email regex | *(from param)* | `<FromEmail>` |
-| `registrantName` | 1 | text | ✅ | non-empty | *(from param)* | `<FromPerson>` |
-| `DOI` | 2 | text | ✅ | DOI pattern | `//medradoidata:DOIData/medradoidata:DOI` | `<DOI>` |
-| `DOIWebsiteLink` | 2 | email/url | ✅ | valid URL | `//medradoidata:DOIData/medradoidata:DOIWebsiteLink` | `<DOIWebsiteLink>` |
-| `certificationType` | 3 | select | ✅ | non-empty | `//ast:assertionType/@option` | `<assertionType option>` |
-| `certificationName` | 3 | select | ✅ | non-empty | `//ast:name/@option` | `<name option>` |
-| `subjectType` | 3 | select | ⚠️ cond. | non-empty if publisherName filled | `//ast:subject/@type` | `<subject type>` |
-| `publisherName` | 3 | text | ✅ | non-empty | `//ast:reference` | `<reference>` |
-| `subjectIDType` | 3 | select | ⚠️ cond. | non-empty if subjectID filled | `//ast:id/@type` | `<id type>` |
-| `subjectID` | 3 | text | ⚠️ cond. | format pattern per type | `//ast:id` | `<id>` text |
-| `certificationStatus` | 3 | select | ✅ | non-empty | `normalize-space(//ast:assertionStatus)` | `<assertionStatus>` text |
-| `certificationStartDate` | 3 | date | ✅ | valid date, < endDate | `//ast:assertionStatus/@startDate` | `startDate` attr |
-| `certificationExpiryDate` | 3 | date | ❌ | > startDate if present | `//ast:assertionStatus/@endDate` | `endDate` attr |
-| `certificationIssuer` | 3 | select | ✅ | non-empty | `//ast:assertorName/@option` | `<assertorName option>` |
-| `releaseDate` | 3 | date | ❌ | valid date | `//ast:releaseDate` | `<releaseDate>` |
-| `certificationScheme` | 3 | select multiple | ✅ (≥1) | at least one selected | `//ast:schemeName/@value` | `<schemeName value>` |
-| `description` | 3 | textarea | ❌ | none | `//ast:description` | `<description>` |
+| Field ID | Tab | HTML Type | Required | Validation |
+|---|---|---|---|---|
+| `From Company` | 1 | text | ✅ | non-empty | 
+| `From Email` | 1 | email | ✅ | email regex | 
+| `DOI Registrant` | 1 | text | ✅ | non-empty |
+| `DOI` | 2 | text | ✅ | DOI pattern | 
+| `URL` | 2 | url | ✅ | valid URL | 
+| `Certification Type` | 3 | select | ✅ | non-empty | 
+| `Certification Name` | 3 | select | ✅ | non-empty | 
+| `Subject Type` | 3 | select | ⚠️ cond. | non-empty if Subject of the Certification filled | 
+| `Subject of the Certification` | 3 | text | ✅ | non-empty | 
+| `Subject ID Type` | 3 | select | ⚠️ cond. | non-empty if Subject ID Value filled | 
+| `Subject ID Value` | 3 | text | ⚠️ cond. | format pattern per Subject ID Type | 
+| `Certification Status` | 3 | select | ✅ | non-empty | 
+| `Start Date` | 3 | date | ✅ | valid date, < endDate | 
+| `End Date` | 3 | date | ❌ | > startDate if present | 
+| `Assertion Issuer` | 3 | select | ✅ | non-empty | 
+| `Assertion Release Date` | 3 | date | ❌ | valid date | 
+| `Certification Scheme Name` | 3 | select multiple | ✅ (≥1) | at least one selected | 
+| `Additional Description` | 3 | textarea | ❌ | none | 
