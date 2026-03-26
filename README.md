@@ -8,9 +8,28 @@ Table of contents
     * [Features of the Interface](#main-features-of-the-interface)
   * [Message Information](#message-information)
   * [DOI Data](#doi-data)
+    - [DOI](#doi)
+    - [URL](#url)
   * [Certification Information](#certification-information)
     * [Certification Data](#certification-data)
-    * [Subject Data](subject#data)
+      - [Certification Type](#certification-type)
+      - [Certification Name](#certification-name)
+    * [Subject Data](#subject-data)
+      - [Subject Type](#subject-type)
+      - [Subject of the Certification](#subject-of-the-certification)
+      - [Subject ID Type](#subject-id-type)
+      - [Subject ID Value](#subject-id-value)
+      - [Subject ID Value Format Patterns](#subject-id-value-format-patterns)
+    - [Status & Dates](#status--dates)
+    - [Certification Status](#certification-status)
+    - [Start Date](#start-date)
+    - [End Date](#end-date)
+  - [Issuer & Release](#issuer--release)
+    - [Assertion Issuer](#assertion-issuer)
+    - [Assertion Release Date](#assertion-release-date)
+  - [Scheme & Description](#scheme--description)
+    - [Certification Scheme Name](#certification-scheme-name)
+    - [Additional Description](#additional-description)
   * [Confirm Data and/or Validation](#confirm-data-andor-validation)
     
 
@@ -125,7 +144,7 @@ In this step, the most complex stage of the wizard, the system collects structur
   | **HTML type** | `<select>` |
   | **Required** | ⚠️ Conditionally — required when `Subject ID Value` has a value |
   | **Options** | `ISNI`, `ISBN`, `ISSN`, `ORCID`, `ROR`, `WIKI`, `DOI`, `VAT`, `LEI` |
-  | **Side effect on change** | Resets `subjectID` field, updates placeholder, shows/hides URL prefix for ORCID and ROR |
+  | **Side effect on change** | Resets `subject ID Value` field, updates placeholder, shows/hides URL prefix for ORCID and ROR |
   | **Cross-field rule** | If `Subject ID Value` is filled AND `Subject ID Type` is empty, then a validation error is thrown on `Subject ID Type` |
   
 
@@ -228,6 +247,46 @@ In this step, the most complex stage of the wizard, the system collects structur
 
 ## Confirm Data and/or Validation
 The final step displays a comprehensive review screen. If any required fields were omitted or completed incorrectly in earlier steps, the system renders a validation error panel that enumerates each issue and the field to which it applies. Once all validation errors have been resolved, the user can finalize the workflow by selecting the Submit button available on this screen.
+Here is a walkthrough of the full success flow when the form is submitted:
+### Submit button click
+The user clicks the button, if no errors are found, a javascript function is called to construct the data to be sent
+### XML payload construction
+From all form fields across the three data tabs: sender info (Tab 1), DOI data (Tab 2), and certification details (Tab 3), the data assembles a DOIRegistrationMessage XML string
+### POST request
+The XML is sent via ajax as a POST to the `/sevlet/user/doidata` endpoint with `Content-Type: application/xml`
+### Success response handling
+If the server responds successfully, the JSON response is parsed and its `Http medra code` field is checked:
+ #### if 200 
+ A modal dialog is called, populating the modal body with a success message, submission details, and optionally a confirmation email address, a submission ID, and a "New assertion" shortcut button pre-filled with the DOI's metadata.
+ #### Otherwise
+ Inside the same former modal dialog, the modal body is populated with HTTP code, error code, and description of the error
+### Post-modal actions
+The user has three exit paths from the modal dialog:
+ #### New assertion with [DOI] metadata
+ Which jumps directly to Tab 2 (DOI Data) with the DOI field pre-focused, allowing the user to quickly register a follow-up assertion reusing the previous DOI's context. The following input are resetted: DOI, URL and Certification Scheme name
+ #### New Blank Assertion 
+ Reset the entire form, returns to Tab 1 (Message Information), but stays on the page, ready for a new submission.
+ #### Exit 
+ Resets the entire form and redirects to `/[lang]/reserved/editor.htm`
+
+```
+User clicks Submit
+       │
+       │
+       ▼
+Build Xml Payload  ← assembles DOIRegistrationMessage XML from all tabs
+       │
+       ▼
+POST /servlet/user/doidata
+Content-Type: application/xml
+       │
+       ├── HTTP 200 ──→ Parse JSON response
+       │                      │
+       │               medra code = 200 ──→ 🟢 Success modal
+       │               medra code ≠ 200 ──→ 🔴 Error details inside same modal
+       │
+       └── HTTP error ──→ 🔴 Error modal with error message
+```
 
 ## Field Quick Reference Table
 
